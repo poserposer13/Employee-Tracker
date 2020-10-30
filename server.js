@@ -18,7 +18,39 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
-    connection.end();
+    // connection.end();
+    main();
 });
+
+function main(){
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "list",
+            message: "What would you like to do?",
+            choices: ["View","Update an Employee","Add an Employee","End"]
+        }
+    ]).then(answers => {
+        if (answers.list === "View") {
+            viewAllEmployees();
+        }
+        else if (answers.list === "Add an Employee") {
+            addEmployee();
+        }
+        else if (answers.list === "Update an Employee"){
+            updateEmployee();
+        }
+        else if(answers.list === "Delete"){
+            deleteEmployee();
+        }
+        else if(answers.list === "Search"){
+            searchArtist();
+        }
+        else if (answers.list === "End") {
+            connection.end();
+        }
+    })
+}
+
 
 
