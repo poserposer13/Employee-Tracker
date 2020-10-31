@@ -1,5 +1,9 @@
 const mysql = require("mysql");
 const inquirer = require('inquirer');
+const views = require(".CRUD/views");
+const creates = require(".CRUD/creates");
+const updates = require(".CRUD/updates");
+const deletes = require(".CRUD/deletes");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -28,7 +32,7 @@ function main(){
             type: "list",
             name: "list",
             message: "What would you like to do?",
-            choices: ["View","Update an Employee","Add an Employee","End"]
+            choices: ["View Everything","View an Employee","View a Role", "View a Department","Add an Employee", "Add a Role", "Add a Department","Update an Employee", "Update a Role", "Update a Department","End"]
         }
     ]).then(answers => {
         if (answers.list === "View") {
@@ -37,20 +41,34 @@ function main(){
         else if (answers.list === "Add an Employee") {
             addEmployee();
         }
+        else if (answers.list === "Add a Role") {
+            addRole();
+        }
+        else if (answers.list === "Add an a Department") {
+            addDepartment();
+        }
         else if (answers.list === "Update an Employee"){
             updateEmployee();
+        }
+        else if (answers.list === "Update a Role"){
+            updateRole();
+        }
+        else if (answers.list === "Update a Department"){
+            updateDepartment();
         }
         else if(answers.list === "Delete"){
             deleteEmployee();
         }
         else if(answers.list === "Search"){
-            searchArtist();
+            searchEmployee();
         }
         else if (answers.list === "End") {
             connection.end();
         }
     })
 }
+
+
 
 
 
