@@ -1,9 +1,10 @@
 const mysql = require("mysql");
 const inquirer = require('inquirer');
-const views = require(".CRUD/views");
-const creates = require(".CRUD/creates");
-const updates = require(".CRUD/updates");
-const deletes = require(".CRUD/deletes");
+const cTable = require('console.table');
+// const views = require("./CRUD/views.js");
+// const creates = require("./CRUD/creates,js");
+// const updates = require("./CRUD/updates.js");
+// const deletes = require("./CRUD/deletes.js");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -26,17 +27,23 @@ connection.connect(function (err) {
     main();
 });
 
-function main(){
+function main() {
     inquirer.prompt([
         {
             type: "list",
             name: "list",
             message: "What would you like to do?",
-            choices: ["View Everything","View an Employee","View a Role", "View a Department","Add an Employee", "Add a Role", "Add a Department","Update an Employee", "Update a Role", "Update a Department","End"]
+            choices: ["View All Employees","View All Employees by Role", "View All Employees by Department", "View an Employee","Update an Employee", "Update an Employee Role", "Update an Employee Department", "Add an Employee", "Add a Role", "Add a Department", "End"]
         }
     ]).then(answers => {
-        if (answers.list === "View") {
+        if (answers.list === "View All Employees") {
             viewAllEmployees();
+        }
+        else if (answers.list === "View All Employees by Department"){
+            viewAllDepartments();
+        }
+        else if (answers.list === "View All Employees by Role"){
+            viewAllRoles();
         }
         else if (answers.list === "Add an Employee") {
             addEmployee();
@@ -47,19 +54,19 @@ function main(){
         else if (answers.list === "Add an a Department") {
             addDepartment();
         }
-        else if (answers.list === "Update an Employee"){
+        else if (answers.list === "Update an Employee") {
             updateEmployee();
         }
-        else if (answers.list === "Update a Role"){
+        else if (answers.list === "Update an Employee Role") {
             updateRole();
         }
-        else if (answers.list === "Update a Department"){
+        else if (answers.list === "Update an Employee Department") {
             updateDepartment();
         }
-        else if(answers.list === "Delete"){
+        else if (answers.list === "Delete") {
             deleteEmployee();
         }
-        else if(answers.list === "Search"){
+        else if (answers.list === "View an Employee") {
             searchEmployee();
         }
         else if (answers.list === "End") {
@@ -72,3 +79,28 @@ function main(){
 
 
 
+
+function viewAllEmployees() {
+    connection.query("SELECT * FROM employee", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        main();
+    })
+};
+
+
+function viewAllDepartments() {
+    connection.query("SELECT employee.id, employee.first_name, employee.last_name, department.department_name FROM employee LEFT JOIN department ON department.id = employee.role_id ", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        main();
+    })
+};
+
+function viewAllRoles(){
+    connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        main();
+    })
+}

@@ -1,6 +1,4 @@
-function viewAllEmployees(){
-
-};
+const inquirer = require("inquirer");
 
 
 
@@ -16,8 +14,4 @@ function viewAllEmployees(){
 
 
 
-
-
-
-
-module.exports = views
+module.exports = viewAllEmployees
