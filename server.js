@@ -6,7 +6,7 @@ const cTable = require('console.table');
 // const updates = require("./CRUD/updates.js");
 // const deletes = require("./CRUD/deletes.js");
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
     host: "localhost",
 
     // Your port; if not 3306
@@ -33,16 +33,16 @@ function main() {
             type: "list",
             name: "list",
             message: "What would you like to do?",
-            choices: ["View All Employees","View All Employees by Role", "View All Employees by Department", "View an Employee","Update an Employee", "Update an Employee Role", "Update an Employee Department", "Add an Employee", "Add a Role", "Add a Department", "End"]
+            choices: ["View All Employees", "View All Employees by Role", "View All Employees by Department", "View an Employee", "Update an Employee", "Update an Employee Role", "Update an Employee Department", "Add an Employee", "Add a Role", "Add a Department", "End"]
         }
     ]).then(answers => {
         if (answers.list === "View All Employees") {
             viewAllEmployees();
         }
-        else if (answers.list === "View All Employees by Department"){
+        else if (answers.list === "View All Employees by Department") {
             viewAllDepartments();
         }
-        else if (answers.list === "View All Employees by Role"){
+        else if (answers.list === "View All Employees by Role") {
             viewAllRoles();
         }
         else if (answers.list === "Add an Employee") {
@@ -83,7 +83,7 @@ function main() {
 function viewAllEmployees() {
     connection.query("SELECT * FROM employee", function (err, res) {
         if (err) throw err;
-        console.table(res);
+        console.table('\n', res ,'\n');
         main();
     })
 };
@@ -92,15 +92,36 @@ function viewAllEmployees() {
 function viewAllDepartments() {
     connection.query("SELECT employee.id, employee.first_name, employee.last_name, department.department_name FROM employee LEFT JOIN department ON department.id = employee.role_id ", function (err, res) {
         if (err) throw err;
-        console.table(res);
+        console.table('\n', res ,'\n');
         main();
     })
 };
 
-function viewAllRoles(){
-    connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id", function (err, res) {
+function viewAllRoles() {
+    connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary FROM employee AS LT LEFT JOIN role AS RT ON LT.role_id = RT.id", function (err, res) {
         if (err) throw err;
-        console.table(res);
+        console.table('\n', res ,'\n');
         main();
     })
-}
+};
+
+function addEmployee() {
+   
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "firstName",
+                message: "First Name?"
+            },
+            {
+                type: "input",
+                name: "lastName",
+                message: "Last Name?"
+            }
+        ]).then(answers => { connection.query("INSERT INTO employee (first_name, last_name) VALUES (?, ?)", [answers.firstName, answers.lastName], function (err, res){
+            if (err) throw err;
+            viewAllEmployees();
+        
+            main();
+        }) })
+    }
